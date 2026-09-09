@@ -1,0 +1,16 @@
+{
+  "name": "protocol-matrix",
+  "description": "Black-box LocalTuya certification across Tuya LAN protocol families",
+  "protocols": ["3.1", "3.3", "3.4", "3.5"],
+  "required_checks": [
+    "connect",
+    "status",
+    "control",
+    "fragmented_tcp_response",
+    "authenticated_failure_fail_closed"
+  ],
+  "secure_sessions": {
+    "3.4": "three-way-session-key+hmac-sha256",
+    "3.5": "three-way-session-key+aes-gcm"
+  }
+}
