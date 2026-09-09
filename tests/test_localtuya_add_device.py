@@ -35,6 +35,12 @@ class _FakeConfig:
 
 
 class _FakeConfigEntries:
+    def __init__(self, entry):
+        self._entries = {entry.entry_id: entry}
+
+    def async_get_known_entry(self, entry_id):
+        return self._entries[entry_id]
+
     def async_update_entry(self, entry, *, data=None, title=None, **kwargs):
         if data is not None:
             entry.data = data
@@ -43,9 +49,9 @@ class _FakeConfigEntries:
 
 
 class _FakeHass:
-    def __init__(self, domain: str):
+    def __init__(self, domain: str, entry):
         self.data = {domain: {}}
-        self.config_entries = _FakeConfigEntries()
+        self.config_entries = _FakeConfigEntries(entry)
         self.config = _FakeConfig()
 
     async def async_add_import_executor_job(self, target, *args):
@@ -69,7 +75,7 @@ class _FakeEntry:
 class RealAddDeviceFlowTests(unittest.IsolatedAsyncioTestCase):
     def _flow(self, cf):
         entry = _FakeEntry(cf)
-        hass = _FakeHass(cf.DOMAIN)
+        hass = _FakeHass(cf.DOMAIN, entry)
         flow = cf.LocalTuyaOptionsFlowHandler(entry)
         flow.hass = hass
         flow.context = {}
