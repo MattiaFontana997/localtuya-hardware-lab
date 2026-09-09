@@ -1,0 +1,13 @@
+{
+  "name": "direct-fragmented-response",
+  "protocol": "3.x-wire",
+  "transport": "direct",
+  "actions": [
+    {
+      "kind": "send_chunks",
+      "chunks": ["000055aa00000001", "0000000a00000010", "7b22647073223a7b2231223a747275657d7d", "0000aa55"],
+      "delay": 0.001
+    }
+  ],
+  "expected": ["client accepts fragmented TCP response without assuming packet boundaries"]
+}
