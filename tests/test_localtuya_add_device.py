@@ -137,6 +137,13 @@ class RealAddDeviceFlowTests(unittest.IsolatedAsyncioTestCase):
                         "is_passive_entity": False,
                     }
                 )
+                # The real Options Flow returns to the entity picker after one
+                # entity is configured. Explicitly press Finish before asserting
+                # persistence, matching the user-visible flow exactly.
+                self.assertEqual(result["step_id"], "pick_entity_type")
+                result = await flow.async_step_pick_entity_type(
+                    {cf.NO_ADDITIONAL_ENTITIES: True}
+                )
                 self.assertEqual(str(result["type"]), "create_entry")
         finally:
             cf.async_get_entity_candidates = original_candidates
