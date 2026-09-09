@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "localtuya-hardware-lab"
+version = "0.1.0"
+description = "Independent virtual hardware lab for LocalTuya"
+requires-python = ">=3.12"
+
+[tool.setuptools.packages.find]
+where = ["src"]
