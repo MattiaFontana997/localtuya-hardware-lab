@@ -2,13 +2,23 @@ name: LocalTuya Virtual Hardware Lab
 
 on:
   push:
+    branches: [main, develop]
   pull_request:
+  schedule:
+    - cron: '17 3 * * *'
   workflow_dispatch:
     inputs:
       localtuya_ref:
-        description: LocalTuya branch, tag or SHA to test
+        description: LocalTuya branch, tag or SHA to certify
         required: false
         default: develop
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hardware-lab-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   harness:
@@ -47,10 +57,18 @@ jobs:
         env:
           LOCALTUYA_ROOT: ${{ github.workspace }}/localtuya
         run: python -m unittest discover -s hardware-lab/tests -v
-      - name: Upload certification inputs
+      - name: Write certification report
+        working-directory: hardware-lab
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: python scripts/write_certification.py
+      - name: Upload certification evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: localtuya-hardware-lab-inputs
+          name: localtuya-hardware-lab-certification
+          if-no-files-found: warn
           path: |
             hardware-lab/reports/localtuya-sha.txt
+            hardware-lab/reports/certification.json
             hardware-lab/scenarios/*.json
