@@ -78,7 +78,11 @@ class RealAddDeviceFlowTests(unittest.IsolatedAsyncioTestCase):
         hass = _FakeHass(cf.DOMAIN, entry)
         flow = cf.LocalTuyaOptionsFlowHandler(entry)
         flow.hass = hass
-        flow.context = {}
+        # Home Assistant's OptionsFlowManager sets ``handler`` to the linked
+        # config-entry ID after constructing the flow. OptionsFlow.config_entry
+        # deliberately rejects access before this initialization is complete.
+        flow.handler = entry.entry_id
+        flow.context = {"entry_id": entry.entry_id}
         return flow, entry
 
     async def _add_switch(self, device, expected_protocol: str) -> None:
