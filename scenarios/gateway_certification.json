@@ -1,0 +1,14 @@
+{
+  "name": "gateway-certification",
+  "protocol": "3.5",
+  "transport": "one-physical-tcp-session",
+  "children": ["cid-1", "cid-2", "cid-3", "cid-4", "cid-5"],
+  "required_checks": [
+    "independent_child_dps",
+    "serialized_child_control",
+    "unsolicited_status_routes_only_matching_cid",
+    "one_child_close_keeps_socket_alive",
+    "physical_disconnect_notifies_children",
+    "next_acquire_creates_fresh_session"
+  ]
+}
