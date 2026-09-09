@@ -1,0 +1,9 @@
+{
+  "name": "connection-reset-during-request",
+  "protocol": "all",
+  "transport": "wire_fault",
+  "actions": [
+    {"kind": "abort"}
+  ],
+  "expected": ["failure is bounded", "next reconnect can create a fresh session"]
+}
