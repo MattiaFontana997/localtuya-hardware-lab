@@ -1,14 +1,22 @@
 {
   "name": "protocol-matrix",
   "description": "Black-box LocalTuya certification across Tuya LAN protocol families",
-  "protocols": ["3.1", "3.3", "3.4", "3.5"],
+  "protocols": ["3.1", "3.2", "3.3", "3.4", "3.5"],
   "required_checks": [
     "connect",
     "status",
     "control",
+    "auto_protocol_detection",
     "fragmented_tcp_response",
+    "coalesced_tcp_frames",
+    "wrong_key_fail_closed",
     "authenticated_failure_fail_closed"
   ],
+  "compatibility_paths": {
+    "3.2": "type_0d/device22-style query",
+    "3.3": "default and data-unvalid/device22 fallback",
+    "3.5": "default and explicit-data-dps fallback"
+  },
   "secure_sessions": {
     "3.4": "three-way-session-key+hmac-sha256",
     "3.5": "three-way-session-key+aes-gcm"
