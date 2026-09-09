@@ -178,6 +178,10 @@ class PersistedConfigOperationalTests(unittest.IsolatedAsyncioTestCase):
                         "is_passive_entity": False,
                     }
                 )
+                self.assertEqual(result["step_id"], "pick_entity_type")
+                result = await flow.async_step_pick_entity_type(
+                    {cf.NO_ADDITIONAL_ENTITIES: True}
+                )
                 self.assertEqual(str(result["type"]), "create_entry")
 
                 stored = copy.deepcopy(entry.data[cf.CONF_DEVICES]["persisted-35"])

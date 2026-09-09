@@ -157,31 +157,31 @@ class RealAddDeviceFlowTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_manual_add_device_31(self):
         await self._add_switch(
-            VirtualTuya31Device(LOCAL_KEY, dps={"1": False}, port=6668, response_chunks=3),
+            VirtualTuya31Device(LOCAL_KEY, dps={"1": False, "2": 42}, port=6668, response_chunks=3),
             "3.1",
         )
 
     async def test_manual_add_device_32(self):
         await self._add_switch(
-            VirtualTuya32Device(LOCAL_KEY, dps={"1": False}, port=6668, response_chunks=3),
+            VirtualTuya32Device(LOCAL_KEY, dps={"1": False, "2": 42}, port=6668, response_chunks=3),
             "3.2",
         )
 
     async def test_manual_add_device_33(self):
         await self._add_switch(
-            VirtualTuya33Device(LOCAL_KEY, dps={"1": False}, port=6668, response_chunks=3),
+            VirtualTuya33Device(LOCAL_KEY, dps={"1": False, "2": 42}, port=6668, response_chunks=3),
             "3.3",
         )
 
     async def test_manual_add_device_34(self):
         await self._add_switch(
-            VirtualTuya34Device(LOCAL_KEY, dps={"1": False}, port=6668, response_chunks=3),
+            VirtualTuya34Device(LOCAL_KEY, dps={"1": False, "2": 42}, port=6668, response_chunks=3),
             "3.4",
         )
 
     async def test_manual_add_device_35(self):
         await self._add_switch(
-            VirtualTuya35Device(LOCAL_KEY, dps={"1": False}, port=6668, response_chunks=3),
+            VirtualTuya35Device(LOCAL_KEY, dps={"1": False, "2": 42}, port=6668, response_chunks=3),
             "3.5",
         )
 
