@@ -1,0 +1,19 @@
+{
+  "name": "gateway-five-children",
+  "protocol": "3.5",
+  "transport": "gateway_child",
+  "child_cids": ["lamp-1", "lamp-2", "lamp-3", "lamp-4", "lamp-5"],
+  "actions": [
+    {"kind": "delay", "delay": 0.002},
+    {"kind": "delay", "delay": 0.002},
+    {"kind": "delay", "delay": 0.002},
+    {"kind": "delay", "delay": 0.002},
+    {"kind": "delay", "delay": 0.002}
+  ],
+  "expected": [
+    "one physical gateway connection can service five child identities",
+    "child failure must not corrupt another child cache",
+    "unsolicited child status is routed by CID",
+    "gateway disconnect invalidates shared session"
+  ]
+}
