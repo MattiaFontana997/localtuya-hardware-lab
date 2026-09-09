@@ -1,0 +1,51 @@
+name: LocalTuya Virtual Hardware Lab
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      localtuya_ref:
+        description: LocalTuya branch, tag or SHA to test
+        required: false
+        default: develop
+
+jobs:
+  harness:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Test lab harness
+        run: python -m unittest discover -s tests -v
+
+  localtuya-target:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout hardware lab
+        uses: actions/checkout@v4
+        with:
+          path: hardware-lab
+      - name: Checkout LocalTuya target
+        uses: actions/checkout@v4
+        with:
+          repository: MattiaFontana997/localtuya
+          ref: ${{ inputs.localtuya_ref || 'develop' }}
+          path: localtuya
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Record exact LocalTuya SHA
+        run: git -C localtuya rev-parse HEAD | tee hardware-lab/reports/localtuya-sha.txt
+      - name: Validate lab scenarios
+        working-directory: hardware-lab
+        run: python -m unittest discover -s tests -v
+      - name: Upload certification inputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: localtuya-hardware-lab-inputs
+          path: |
+            hardware-lab/reports/localtuya-sha.txt
+            hardware-lab/scenarios/*.json
