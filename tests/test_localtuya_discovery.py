@@ -85,6 +85,56 @@ class RealDiscoveryTests(unittest.IsolatedAsyncioTestCase):
             discovery.close()
             await asyncio.sleep(0)
 
+    async def test_targeted_find_device_ignores_other_real_udp_and_waits_for_delayed_target(self):
+        """Real UDP traffic must be filtered by Device ID, not first responder."""
+        discovery_module = load_discovery()
+
+        if not hasattr(discovery_module, "find_device"):
+            self.fail("LocalTuya target does not expose targeted find_device()")
+
+        async def delayed_virtual_announcements():
+            sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            try:
+                # Let find_device() bind all three real Tuya UDP listener ports.
+                await asyncio.sleep(0.05)
+                sender.sendto(
+                    build_55aa_encrypted_announcement(
+                        "unrelated-tuya-device",
+                        "3.3",
+                    ),
+                    ("127.0.0.1", 6667),
+                )
+
+                # The requested gateway announces later, as a slow 3.5 device
+                # would after a later REQ_DEVINFO cycle in the field.
+                await asyncio.sleep(0.08)
+                sender.sendto(
+                    build_6699_announcement(
+                        "virtual-slow-gateway",
+                        "3.5",
+                        iv=b"slowgateway1",
+                    ),
+                    ("127.0.0.1", 7000),
+                )
+            finally:
+                sender.close()
+
+        producer = asyncio.create_task(delayed_virtual_announcements())
+        try:
+            result = await discovery_module.find_device(
+                "virtual-slow-gateway",
+                timeout=1.0,
+                rebroadcast_interval=0.10,
+                hass=None,
+            )
+        finally:
+            await producer
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["gwId"], "virtual-slow-gateway")
+        self.assertEqual(result["ip"], "127.0.0.1")
+        self.assertEqual(result["version"], "3.5")
+
 
 if __name__ == "__main__":
     unittest.main()
